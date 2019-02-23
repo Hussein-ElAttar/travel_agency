@@ -20,6 +20,8 @@ urlpatterns = [
     url(r'^hotelres/$', views.hotelReservation),
     url(r'^user/$', views.showUserReservations),
 
+    url(r'^api/country/(?P<countryName>[a-zA-Z ]+)/$', views.country_api),
+    url(r'^api/country/(?P<countryName>[a-zA-Z ]+)/city/(?P<cityName>[a-zA-Z ]+)/$', views.city_api),
     url(r'^$', views.homePage),
 
 ]

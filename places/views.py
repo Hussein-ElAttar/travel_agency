@@ -8,6 +8,7 @@ from pprint import *
 from .utils.crawler import Gretty_Image_Crawler, Yahoo_Image_Crawler
 from blog.forms import CommentForm, PostForm
 from blog.models import Post, Comment
+import json
 # Create your views here.
 
 # index Test :-
@@ -31,7 +32,7 @@ def country_page(request, countryName):
         country_cr = Gretty_Image_Crawler(country.country_Name)
         country_img_url = country_cr.get_random_url()
         country.image = country_img_url
-        context = {"country": country, "cities": cities, "countries": countries}
+        context = {"country": country, "cities": cities,"countries":getAllCountries()}
         return render(request, "country.html", context)
     except:
         return HttpResponseRedirect("/places/")
@@ -46,7 +47,7 @@ class city_handler:
         try:
             country = Country.objects.get(country_Name = countryName)
             city    = City.objects.get(city_Name = cityName, country_Name_id = country.id)
-            posts = city_handler.__get_city_posts(request, city.id)
+            posts   = city_handler.__get_city_posts(request, city.id)
             
             if request.method == 'GET':
                 form  = city_handler.__get_saved_user_rating_form(request, city.id)
@@ -69,7 +70,8 @@ class city_handler:
                 "description":description,
                 "form": form,
                 "post": PostForm(),
-                "posts": posts
+                "posts": posts,
+                "countries":getAllCountries()
             }
             return render(request, "city.html", context) 
         except:
@@ -114,26 +116,10 @@ class city_handler:
 
 # Country Methods :-
 
-
 def homePage(request):
     countries = getAllCountries()
-    # top_locations = UserCityRate.objects.filter(rate=5).values_list('city', flat=True)[:6]
-    # top_cities = City.objects.filter(id__in=top_locations)
-    top_cities = UserCityRate.objects.filter(rate=5)[:3]
-    city_image = []
-    country_image = []
-    for city in top_cities:
-        city_cr = Gretty_Image_Crawler(city.city.city_Name)
-        country_cr = Gretty_Image_Crawler(city.city.country_Name.country_Name)
-        city_img_url = city_cr.get_random_url()
-        country_img_url = country_cr.get_random_url()
-        city_image.append(city_img_url)
-        country_image.append(country_img_url)
-        # city.image = city_img_url
-
-    city_zip = zip(city_image, top_cities)
-    country_zip = zip(country_image, top_cities)
-    context = {"countries": countries, "image_countries": country_zip, "image_cities": city_zip}
+    top_cities = UserCityRate.objects.order_by('-rate')[:3]
+    context = {"top_cities": top_cities,"countries":getAllCountries()}
     return render(request, 'homepage.html', context)
 
 
@@ -242,4 +228,24 @@ def hotelReservation(request):
     else:
         form = HotelReservationForm()
         context = {'hotel_form': form}
+    
         return render(request, 'hotelReservation.html', context)
+
+def city_api(request,countryName, cityName):
+    try:
+        country = Country.objects.get(country_Name = countryName)
+        city    = City.objects.get(city_Name = cityName, country_Name_id = country.id)
+        cr = Gretty_Image_Crawler(cityName)
+        obj = {"urls":cr.get_urls(),"url":cr.get_random_url(),"description":cr.get_city_description()}
+        return HttpResponse(json.dumps(obj))
+    except:
+        return HttpResponse(json.dumps({"status":"404","error":"not found"}))
+
+def country_api(request,countryName):
+    try:
+        country = Country.objects.get(country_Name = countryName)
+        cr = Gretty_Image_Crawler(countryName)
+        obj = {"urls":cr.get_urls(),"url":cr.get_random_url()}
+        return HttpResponse(json.dumps(obj))
+    except:
+        return HttpResponse(json.dumps({"status":"404","error":"not found"}))
