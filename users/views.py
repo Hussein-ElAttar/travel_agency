@@ -4,17 +4,10 @@ from django.contrib.auth import login, authenticate,logout
 from django.shortcuts    import render, redirect
 from .forms              import UserSignUpForm, UserloginForm, UserEditForm
 from places.models import CustomUser
+from places.views import *
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.
-
-
-# @login_required
-def index(request):
-    if request.user.is_authenticated():
-        return HttpResponse('<h1>Hello ' + request.user.username  + '</h1>')
-    else:
-        return HttpResponse('<h1>Hello Stranger!</h1>')
 
 
 def signup_view(request):
@@ -37,9 +30,9 @@ def signup_view(request):
                 login(request, user)
                 return redirect('/users/')
             else:
-                return render(request, 'registration/signup.html', {'form', form})
+                return render(request, 'registration/signup.html', {'form': form, 'countries': getAllCountries()})
     
-    return render(request, 'registration/signup.html', {'form': form})
+    return render(request, 'registration/signup.html', {'form': form, 'countries': getAllCountries()})
 
 
 def login_view(request):
@@ -56,9 +49,9 @@ def login_view(request):
                 return redirect('/')
             else:
                 error = "either username or password is wrong"
-                return render(request, 'registration/login.html', {'form': form,'error':error})
+                return render(request, 'registration/login.html', {'form': form, 'error': error})
                 
-    return render(request, 'registration/login.html', {'form': form})
+    return render(request, 'registration/login.html', {'form': form, 'countries': getAllCountries()})
 
 
 def logout_view(request):

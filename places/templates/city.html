@@ -13,8 +13,8 @@
                 <div class="col-md-8" data-aos="fade-up" data-aos-delay="400">
                   <h1 class="text-white font-weight-light">{{ city.city_Name }}</h1>
                   <!--<div><a href="\">Home</a> <span class="mx-2 text-white">&bullet;</span> <span class="text-white">{{ city.city_Name }}</span></div>-->
-                    <span><a href="rent.html" class="btn btn-primary py-3 px-5 text-white">Rent Car!</a></span>
-                    <span><a href="reservation.html" class="btn btn-primary py-3 px-5 text-white">Reservation!</a></span>
+                    <span><a href="/rentcar/" class="btn btn-primary py-3 px-5 text-white">Rent Car!</a></span>
+                    <span><a href="/hotelres/" class="btn btn-primary py-3 px-5 text-white">Reservation!</a></span>
                 </div>
               </div>
             </div>
@@ -61,6 +61,10 @@
           <h1>Posts</h1>
           {% for post in posts %}
             <p> {{post.post_Text}} <span> --{{post.post_Created_at}}</span> <span> --{{post.user_Name}}</span></p>
+            <form method="post"> {%csrf_token%}
+            {{comment.as_p}}
+            <button type="submit">create comment</button>
+          </form>
           {% endfor %}
         </div>
       </div>
