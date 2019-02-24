@@ -1,13 +1,16 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from .models import Country, City, Location, Hotel, CityHotel, UserCityRate, UserCarRent, UserHotelReservation
+from .models import Country, City, Location, Hotel, CityHotel,CityPics, UserCityRate, UserCarRent, UserHotelReservation
 from .forms import UserCityRateForm, UserCarRentForm, HotelReservationForm
 from pprint import *
 from .utils.crawler import Gretty_Image_Crawler, Yahoo_Image_Crawler
 from blog.forms import CommentForm, PostForm
 from blog.models import Post, Comment
+from django.http import JsonResponse
 import json
+import random
+
 # Create your views here.
 
 
@@ -26,13 +29,10 @@ def country_page(request, countryName):
     try:
         country = Country.objects.get(country_Name=countryName)
         cities  = City.objects.filter(country_Name_id=country.id)
-        country_cr = Gretty_Image_Crawler(country.country_Name)
-        country_img_url = country_cr.get_random_url()
-        country.image = country_img_url
         context = {"country": country, "cities": cities, "countries":getAllCountries()}
         return render(request, "country.html", context)
     except:
-        return HttpResponseRedirect("/places/")
+        return HttpResponseRedirect("/")
 
 
 def city_page(request, countryName, cityName):
@@ -59,15 +59,9 @@ class city_handler:
                 city_handler.__rate_city(request, form, city.id)
                 city_handler.__create_comment(request, form, city.id)
 
-            cr = Gretty_Image_Crawler(cityName)
-            city_img_url = cr.get_random_url()
-            description = cr.get_city_description()
-            
             context = {
                 "country": country, 
                 "city":city,
-                "city_img_url":city_img_url,
-                "description":description,
                 "form": form,
                 "post": PostForm(),
                 "posts": posts,
@@ -247,17 +241,51 @@ def city_api(request,countryName, cityName):
     try:
         country = Country.objects.get(country_Name = countryName)
         city    = City.objects.get(city_Name = cityName, country_Name_id = country.id)
-        cr = Gretty_Image_Crawler(cityName)
-        obj = {"urls":cr.get_urls(),"url":cr.get_random_url(),"description":cr.get_city_description()}
-        return HttpResponse(json.dumps(obj))
-    except:
-        return HttpResponse(json.dumps({"status":"404","error":"not found"}))
+        if city.city_is_crawled:
+            urls = []
+            desc = city.city_Description
+            city_pics_query = CityPics.objects.filter(city_id=city.id)
+            for city_pic in city_pics_query:
+                urls.append(city_pic.url)
+        else:
+            cr = Gretty_Image_Crawler(cityName)
+            desc = cr.get_city_description()
+            City.objects.filter(id=city.id).update(city_Description=desc)
+            urls = cr.get_urls()[:10]
+            for url in urls:
+                CityPics.objects.create(url=url, city = city)
+            city.city_is_crawled = True
+            city.save()
 
-def country_api(request,countryName):
+        return JsonResponse({"city":city.city_Name, "urls":urls, "description":desc})
+    except:
+        return JsonResponse({"status":"404","error":"not found"})
+
+
+def country_api(request, countryName):
     try:
         country = Country.objects.get(country_Name = countryName)
-        cr = Gretty_Image_Crawler(countryName)
-        obj = {"urls":cr.get_urls(),"url":cr.get_random_url()}
-        return HttpResponse(json.dumps(obj))
+        country_cities    = City.objects.filter(country_Name_id = country.id)
+        random_valid_city_num = random.randint(0, len(country_cities)-1)
+        city = country_cities[random_valid_city_num]
+        
+        if city.city_is_crawled:
+            urls = []
+            desc = city.city_Description
+            city_pics_query = CityPics.objects.filter(city_id=city.id)
+            for city_pic in city_pics_query:
+                urls.append(city_pic.url)
+        else:
+            print("akldsghsdjf;aklkf")
+            cr = Gretty_Image_Crawler(city.city_Name)
+            desc = cr.get_city_description()
+            City.objects.filter(id=city.id).update(city_Description=desc)
+            urls = cr.get_urls()[:10]
+            for url in urls:
+                CityPics.objects.create(url=url, city = city)
+            city.city_is_crawled = True
+            city.save()
+
+        return JsonResponse({"country":country.country_Name, "urls":urls, "description":desc})
     except:
-        return HttpResponse(json.dumps({"status":"404","error":"not found"}))
+        return JsonResponse({"status":"404","error":"not found"})

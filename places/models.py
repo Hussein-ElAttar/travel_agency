@@ -26,6 +26,7 @@ class City(models.Model):
     city_Name = models.CharField(max_length=100)
     city_Description = models.CharField(max_length=1000,null=True, blank=True)
     city_Pic = models.ImageField(upload_to='cities', max_length=250,null=True, blank=True)
+    city_is_crawled = models.BooleanField(default=False)
     country_Name = models.ForeignKey(Country)
 
     def __str__(self):
@@ -39,6 +40,10 @@ class City(models.Model):
 
     class Meta:
         verbose_name_plural = "Cities"
+
+class CityPics(models.Model):
+    city = models.ForeignKey(City)
+    url = models.CharField(max_length=150)
 
 
 class Location(models.Model):

@@ -7,7 +7,7 @@ import re
 
 gretty_url    = "https://www.gettyimages.com/photos/{{keyword}}?alloweduse=availableforalluses&family=creative&license=rf&phrase={{keyword}}&sort=best#license"
 lorum_ipsum   = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged"
-bing_url      = "https://www.bing.com/search?q={{city_name}}+city+wikipedia&go=Search"
+bing_url      = "https://www.bing.com/search?q={{city_name}}+city+wikipedia+site%3Awikipedia.org&go=Search&qs=ds&form=QBRE"
 yahoo_url     = "https://images.search.yahoo.com/search/images;_ylt=F;_ylc=X?&fr2=sb-top-images.search.yahoo.com&p={{keyword}}"
 gretty_hq_url = "https://media.gettyimages.com/photos/picture-id"
 
@@ -43,8 +43,7 @@ class Image_Crawler(ABC):
         return self.urls[0 : num_of_urls]
 
     def get_city_description(self):
-        city_name = self.city_name.replace(" ", "%20")
-        url       = bing_url.replace("{{city_name}}",city_name)
+        url       = bing_url.replace("{{city_name}}",self.city_name)
         crawler   = self.crawl_page(url)
         try:
             desc  = crawler.find("ul", { "class" : "b_vList" }).find("li").find("div")
@@ -60,14 +59,13 @@ class Gretty_Image_Crawler(Image_Crawler):
     def search(self, keyword):
         self.urls = []
         self.city_name = keyword.replace(" ", "%20")
-        url      = gretty_url.replace("{{keyword}}",keyword)
+        url      = gretty_url.replace("{{keyword}}",self.city_name)
         crawler  = self.crawl_page(url)
         img_tags = crawler.findAll("a", {"class","search-result-asset-link"})
         for tag in img_tags:
             id = tag["data-asset-id"]
             self.urls.append(gretty_hq_url + id)
 
-        print(self.urls[5])
         return self.urls
 
 

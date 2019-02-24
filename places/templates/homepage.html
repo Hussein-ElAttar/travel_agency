@@ -29,8 +29,8 @@
         <div class="row">
           {% for city in top_cities %}
             <div class="col-md-6 col-lg-4 mb-4">
-            <a href="#" class="unit-1 text-center">
-              <img id="{{city.city.country_Name}}" src="{% static 'images/loadingimg.gif' %}" alt="Image" class="img-fluid">
+            <a href="/country/{{city.city.country_Name}}/" class="unit-1 text-center">
+              <img id="{{city.city.country_Name}}" src="{% static 'images/loadingimg.gif' %}" alt="Image" class="img-fluid" style="height:250px">
               <div class="unit-1-text">
                 <h3 class="unit-1-heading">{{city.city.country_Name}}</h3>
               </div>
@@ -58,10 +58,10 @@
             <div class="container">
               <div class="row">
                 <div class="col-lg-6 mb-5">
-                  <img  id="{{city.city}}"  src="{% static 'images/loadingimg.gif' %}" alt="Image" class="img-md-fluid">
+                  <img  id="{{city.city}}"  src="{% static 'images/loadingimg.gif' %}" alt="Image" class="img-md-fluid" style="height:350px">
                 </div>
                 <div class="overlap-left col-lg-6 bg-white p-md-5 align-self-center">
-                    <a href="/country/{{city.city.country_Name}}/city/{{city.city}}">{{city.city}}</a>
+                    <a href="/country/{{city.city.country_Name}}/city/{{city.city}}/">{{city.city}}</a>
                   <p class="text-black lead">&ldquo;Lorem ipsum dolor sit amet, consectetur adipisicing elit. Similique dolorem quisquam laudantium, incidunt id laborum, tempora aliquid labore minus. Nemo maxime, veniam! Fugiat odio nam eveniet ipsam atque, corrupti porro&rdquo;</p>
                   <p class="">&mdash; <em>MHA Team</em>, <a>Traveler</a></p>
                 </div>
@@ -113,15 +113,13 @@
     <script type="text/javascript"> 
       {% for city in top_cities %}
         {
-        let api_url = "http://localhost:8000/api/country/{{city.city.country_Name}}"
+        let api_url = "http://localhost:8000/api/country/{{city.city.country_Name}}/"
         let country_img_id = "{{city.city.country_Name}}"
         fetch(api_url)
         .then((response)=>{
               let country_img = document.body.querySelector("#"+country_img_id)
               response.json().then(data =>{
-                setInterval(function(){
                     country_img.src = data.urls[Math.floor(Math.random()*data.urls.length)]
-                  },8000)
               })
         })
         }
@@ -131,16 +129,14 @@
     <script>
       {% for city in top_cities %}
       {
-        let api_url = "http://localhost:8000/api/country/{{city.city.country_Name}}/city/{{city.city}}"
+        let api_url = "http://localhost:8000/api/country/{{city.city.country_Name}}/city/{{city.city}}/"
         let city_img_id = "{{city.city}}"
         fetch(api_url)
         .then((response)=>{
               let city_imgs = document.body.querySelectorAll("#"+city_img_id)
               response.json().then(data =>{
                 city_imgs.forEach((img)=>{
-                  setInterval(function(){
                     img.src = data.urls[Math.floor(Math.random()*data.urls.length)]
-                  },8000)
                 })
               })
         })

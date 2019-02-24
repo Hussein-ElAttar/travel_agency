@@ -6,7 +6,7 @@
 
 {%block main_block%}
                 {% load static %}
-        <div class="site-blocks-cover inner-page-cover" style="background-image:url({{ city_img_url }});" data-aos="fade" data-stellar-background-ratio="0.5">
+        <div class="site-blocks-cover inner-page-cover" id="{{ city.city_Name }}" style="background-image:url();" data-aos="fade" data-stellar-background-ratio="0.5">
             <div class="container">
               <div class="row align-items-center justify-content-center text-center">
 
@@ -31,7 +31,7 @@
             <div class="p-5 bg-white">
 
               <h1>Description</h1>
-              <p>{{description}}</p>
+              <p id="description">{{description}}</p>
             </div>
           </div>
 
@@ -69,5 +69,26 @@
         </div>
       </div>
     </div>
-{% endblock %}
 
+    <script type="text/javascript"> 
+        {
+          let api_url = "http://localhost:8000/api/country/{{country}}/city/{{city.city_Name}}/"
+          let city_img_id = "{{city.city_Name}}"
+          fetch(api_url)
+          .then((response)=>{
+              let city_imgs       = document.body.querySelectorAll("#"+city_img_id)
+              // let description_tag = document.body.querySelector("#description")
+              response.json().then(data =>{
+                city_imgs.forEach((img)=>{
+                  setInterval(function changeImg(){
+                    let src =  data.urls[Math.floor(Math.random()*data.urls.length)]
+                    img.setAttribute("style","background-image:url(" + src + ")" )
+                    // description_tag.textContent = data.description
+                    return changeImg
+                  }(),8000)
+                })
+              })
+        })
+      }
+    </script>
+{% endblock %}
