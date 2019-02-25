@@ -27,8 +27,8 @@ def index(request):
 
 def country_page(request, countryName):
     try:
-        country = Country.objects.get(country_Name=countryName)
-        cities  = City.objects.filter(country_Name_id=country.id)
+        country = Country.objects.get(name=countryName)
+        cities  = City.objects.filter(country=country.id)
         context = {"country": country, "cities": cities, "countries":getAllCountries()}
         return render(request, "country.html", context)
     except:
@@ -43,8 +43,8 @@ class city_handler:
     @staticmethod
     def handle_request(request, countryName, cityName):
         try:
-            country = Country.objects.get(country_Name = countryName)
-            city    = City.objects.get(city_Name = cityName, country_Name_id = country.id)
+            country = Country.objects.get(name = countryName)
+            city    = City.objects.get(city_Name = cityName, country = country.id)
             posts   = city_handler.__get_city_posts(request, city.id)
             
             if request.method == 'GET':
@@ -181,8 +181,8 @@ def hotelReservation(request):
                 hotel_Name=request.POST.get('hotel_Name'),
                 rooms     =request.POST.get('rooms'),
                 room_type =request.POST.get('room_type'),
-                to_Date  =request.POST.get('to_Date'),
-                from_Date=request.POST.get('from_Date')
+                to_Date   =request.POST.get('to_Date'),
+                from_Date =request.POST.get('from_Date')
             )
             return HttpResponseRedirect('/places/')
     else:
@@ -194,52 +194,52 @@ def hotelReservation(request):
 
 def city_api(request,countryName, cityName):
     try:
-        country = Country.objects.get(country_Name = countryName)
-        city    = City.objects.get(city_Name = cityName, country_Name_id = country.id)
-        if city.city_is_crawled:
+        country = Country.objects.get(name = countryName)
+        city    = City.objects.get(name = cityName, country = country.id)
+        if city.is_crawled:
             urls = []
-            desc = city.city_Description
+            desc = city.description
             city_pics_query = CityPics.objects.filter(city_id=city.id)
             for city_pic in city_pics_query:
                 urls.append(city_pic.url)
         else:
             cr = Gretty_Image_Crawler(cityName)
             desc = cr.get_city_description()
-            city.city_Description = desc
+            city.description = desc
             urls = cr.get_urls()[:10]
             for url in urls:
                 CityPics.objects.create(url=url, city = city)
-            city.city_is_crawled = True
+            city.is_crawled = True
             city.save()
 
-        return JsonResponse({"city":city.city_Name, "urls":urls, "description":desc})
+        return JsonResponse({"city":city.name, "urls":urls, "description":desc})
     except:
         return JsonResponse({"status":"404","error":"not found"})
 
 
 def country_api(request, countryName):
     try:
-        country = Country.objects.get(country_Name = countryName)
-        country_cities    = City.objects.filter(country_Name_id = country.id)
+        country = Country.objects.get(name = countryName)
+        country_cities    = City.objects.filter(country = country.id)
         random_valid_city_num = random.randint(0, len(country_cities)-1)
         city = country_cities[random_valid_city_num]
         
-        if city.city_is_crawled:
+        if city.is_crawled:
             urls = []
-            desc = city.city_Description
+            desc = city.description
             city_pics_query = CityPics.objects.filter(city_id=city.id)
             for city_pic in city_pics_query:
                 urls.append(city_pic.url)
         else:
-            cr = Gretty_Image_Crawler(city.city_Name)
+            cr = Gretty_Image_Crawler(city.name)
             desc = cr.get_city_description()
-            city.city_Description = desc
+            city.description = desc
             urls = cr.get_urls()[:10]
             for url in urls:
                 CityPics.objects.create(url=url, city = city)
-            city.city_is_crawled = True
+            city.is_crawled = True
             city.save()
 
-        return JsonResponse({"country":country.country_Name, "urls":urls, "description":desc})
+        return JsonResponse({"country":country.name, "urls":urls, "description":desc})
     except:
         return JsonResponse({"status":"404","error":"not found"})

@@ -6,14 +6,14 @@ from datetime import datetime
 
 
 class Country(models.Model):
-    country_Name = models.CharField(max_length=100)
-    country_Pic = models.ImageField(upload_to='countries', max_length=250,null=True, blank=True)
+    name = models.CharField(max_length=100)
+    pic = models.ImageField(upload_to='countries', max_length=250,null=True, blank=True)
 
     def __str__(self):
-        return self.country_Name
+        return self.name
 
     def image_tag(self):
-        return u'<img src="/media/%s" width=50 height=50/>' % self.country_Pic
+        return u'<img src="/media/%s" width=50 height=50/>' % self.pic
 
     image_tag.short_description = 'Image'
     image_tag.allow_tags = True
@@ -23,17 +23,17 @@ class Country(models.Model):
 
 
 class City(models.Model):
-    city_Name = models.CharField(max_length=100)
-    city_Description = models.CharField(max_length=1000,null=True, blank=True)
-    city_Pic = models.ImageField(upload_to='cities', max_length=250,null=True, blank=True)
-    city_is_crawled = models.BooleanField(default=False)
-    country_Name = models.ForeignKey(Country)
+    name = models.CharField(max_length=100)
+    description = models.CharField(max_length=1000,null=True, blank=True)
+    pic = models.ImageField(upload_to='cities', max_length=250,null=True, blank=True)
+    is_crawled = models.BooleanField(default=False)
+    country = models.ForeignKey(Country)
 
     def __str__(self):
-        return self.city_Name
+        return self.name
 
     def image_tag(self):
-        return u'<img src="/media/%s" width=50 height=50/>' % self.city_Pic
+        return u'<img src="/media/%s" width=50 height=50/>' % self.pic
 
     image_tag.short_description = 'Image'
     image_tag.allow_tags = True
@@ -50,7 +50,7 @@ class Location(models.Model):
     loc_Name = models.CharField(max_length=100)
     loc_Description = models.CharField(max_length=1000, null=True, blank=True)
     loc_Pic = models.ImageField(upload_to='locations', max_length=250)
-    city_Name = models.ForeignKey(City)
+    name = models.ForeignKey(City)
 
     def __str__(self):
         return self.loc_Name
@@ -122,13 +122,13 @@ class UserCarRent(models.Model):
         return self.time
 
     def get_loc(self):
-        return self.pickup_loc.city_Name
+        return self.pickup_loc.name
     #
-    # def set_pickup(self, city_name):
-    #     self.pickup_loc = city_name
+    # def set_pickup(self, name):
+    #     self.pickup_loc = name
     #
-    # def set_dropoff(self, city_name):
-    #     self.dropoff_loc = city_name
+    # def set_dropoff(self, name):
+    #     self.dropoff_loc = name
 
 
 

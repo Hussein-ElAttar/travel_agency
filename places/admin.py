@@ -9,41 +9,41 @@ from .models import Country, City, Location, Hotel, CityHotel
 
 class CustomCountry(admin.ModelAdmin):
     fieldsets = [
-        ['Country Info', {'fields': ['country_Name', 'country_Pic']}],
-        ['Cities', {'fields': ['country_Name']}]
+        ['Country Info', {'fields': ['name', 'pic']}],
+        ['Cities', {'fields': ['name']}]
     ]
-    list_display = ['country_Name', 'image_tag']
-    list_filter = ['country_Name']
-    search_fields = ['country_Name']
+    list_display = ['name', 'image_tag']
+    list_filter = ['name']
+    search_fields = ['name']
 
 
 class CustomCity(admin.ModelAdmin):
     fieldsets = [
-        ['City Info', {'fields': ['city_Name', 'city_Description', 'city_Pic']}],
-        ['Country', {'fields': ['country_Name']}],
+        ['City Info', {'fields': ['name', 'description', 'pic']}],
+        ['Country', {'fields': ['name']}],
     ]
-    list_display = ['city_Name', 'city_Description', 'country_Name', 'image_tag']
-    list_filter = ['country_Name']
-    search_fields = ['city_Name', 'country_Name__country_Name']
+    list_display = ['name', 'description', 'name', 'image_tag']
+    list_filter = ['name']
+    search_fields = ['name', 'name__name']
 
 
 class CustomLocation(admin.ModelAdmin):
     fieldsets = [
         ['Location Info', {'fields': ['loc_Name', 'loc_Description', 'loc_Pic']}],
-        ['City', {'fields': ['city_Name']}]
+        ['City', {'fields': ['name']}]
     ]
-    list_display = ['loc_Name', 'loc_Description', 'city_Name', 'image_tag']
-    list_filter = ['city_Name']
-    search_fields = ['city_Name__city_Name', 'loc_Name']
+    list_display = ['loc_Name', 'loc_Description', 'name', 'image_tag']
+    list_filter = ['name']
+    search_fields = ['name__name', 'loc_Name']
 
 
 class CustomHotel(admin.ModelAdmin):
     fieldsets = [
         ['Hotel Info', {'fields': ['hotel_Name']}],
-        ['City', {'fields': ['city_Name']}]
+        ['City', {'fields': ['name']}]
     ]
     list_display = ['hotel_id', 'city_id']
-    list_filter = ['hotel_id__hotel_Name', 'city_id__city_Name']
+    list_filter = ['hotel_id__hotel_Name', 'city_id__name']
     search_fields = ['city_id', 'hotel_id']
 
 
