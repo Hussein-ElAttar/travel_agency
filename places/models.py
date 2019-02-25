@@ -122,13 +122,13 @@ class UserCarRent(models.Model):
         return self.time
 
     def get_loc(self):
-        return self.pickup_loc.name
+        return self.pickup_loc.city_Name
     #
-    # def set_pickup(self, name):
-    #     self.pickup_loc = name
+    # def set_pickup(self, city_name):
+    #     self.pickup_loc = city_name
     #
-    # def set_dropoff(self, name):
-    #     self.dropoff_loc = name
+    # def set_dropoff(self, city_name):
+    #     self.dropoff_loc = city_name
 
 
 

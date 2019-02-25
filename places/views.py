@@ -35,6 +35,7 @@ def country_page(request, countryName):
         return HttpResponseRedirect("/")
 
 
+
 def city_page(request, countryName, cityName):
     return city_handler.handle_request(request, countryName, cityName)
 
@@ -44,7 +45,7 @@ class city_handler:
     def handle_request(request, countryName, cityName):
         try:
             country = Country.objects.get(name = countryName)
-            city    = City.objects.get(city_Name = cityName, country = country.id)
+            city    = City.objects.get(name = cityName, country = country.id)
             posts   = city_handler.__get_city_posts(request, city.id)
             
             if request.method == 'GET':
