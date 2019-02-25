@@ -135,52 +135,6 @@ def homePage(request):
     return render(request, 'homepage.html', context)
 
 
-# City Methods :-
-def getAllCities(request):
-    cities = City.objects.all()
-    context = {"cities": cities}
-    return render(request, "cityPage.html", context)
-
-
-def getCityById(request, cityId):
-    city = City.objects.get(id=eval(cityId))
-    context = {"city": city}
-    return render(request, "cityPage.html", context)
-
-
-# Location Methods :-
-def getAllLocations(request):
-    locations = Location.objects.all()
-    context = {"locations": locations}
-    return render(request, "locationsPage.html", context)
-
-
-def getLocationById(request, locationId):
-    location = Location.objects.get(id=eval(locationId))
-    context = {"location": location}
-    return render(request, "locationPage.html", context)
-
-
-# Hotel Methods :-
-def getAllHotels(request):
-    hotels = Hotel.objects.all()
-    context = {"hotels": hotels}
-    return render(request, "hotelsPage.html", context)
-
-
-def getHotelById(request, hotelId):
-    hotel = Hotel.objects.get(id=eval(hotelId))
-    context = {"hotel": hotel}
-    return render(request, "hotelPage.html", context)
-
-
-# Services
-def getUserCityRate(request, cityId):
-    rate = UserCityRate.objects.filter(user_id = request.user.id, city_id = cityId)
-    context = {"rate": rate}
-    return context
-
-
 @login_required
 def showUserReservations(request):   
     try:
@@ -237,6 +191,7 @@ def hotelReservation(request):
     
         return render(request, 'hotelReservation.html', context)
 
+
 def city_api(request,countryName, cityName):
     try:
         country = Country.objects.get(country_Name = countryName)
@@ -250,7 +205,7 @@ def city_api(request,countryName, cityName):
         else:
             cr = Gretty_Image_Crawler(cityName)
             desc = cr.get_city_description()
-            City.objects.filter(id=city.id).update(city_Description=desc)
+            city.city_Description = desc
             urls = cr.get_urls()[:10]
             for url in urls:
                 CityPics.objects.create(url=url, city = city)
@@ -276,10 +231,9 @@ def country_api(request, countryName):
             for city_pic in city_pics_query:
                 urls.append(city_pic.url)
         else:
-            print("akldsghsdjf;aklkf")
             cr = Gretty_Image_Crawler(city.city_Name)
             desc = cr.get_city_description()
-            City.objects.filter(id=city.id).update(city_Description=desc)
+            city.city_Description = desc
             urls = cr.get_urls()[:10]
             for url in urls:
                 CityPics.objects.create(url=url, city = city)

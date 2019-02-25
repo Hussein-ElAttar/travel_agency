@@ -113,8 +113,8 @@
     <script type="text/javascript"> 
       {% for city in top_cities %}
         {
-        let api_url = "http://localhost:8000/api/country/{{city.city.country_Name}}/"
-        let country_img_id = "{{city.city.country_Name}}"
+        let api_url = "http://localhost:8000/api/country/{{city.city.country_Name}}/".replace(" ","%20")
+        let country_img_id = "{{city.city.country_Name}}".replace(" ", "\\ ")
         fetch(api_url)
         .then((response)=>{
               let country_img = document.body.querySelector("#"+country_img_id)
@@ -129,8 +129,8 @@
     <script>
       {% for city in top_cities %}
       {
-        let api_url = "http://localhost:8000/api/country/{{city.city.country_Name}}/city/{{city.city}}/"
-        let city_img_id = "{{city.city}}"
+        let api_url = "http://localhost:8000/api/country/{{city.city.country_Name}}/city/{{city.city}}/".replace(" ","%20")
+        let city_img_id = "{{city.city}}".replace(" ", "\\ ")
         fetch(api_url)
         .then((response)=>{
               let city_imgs = document.body.querySelectorAll("#"+city_img_id)

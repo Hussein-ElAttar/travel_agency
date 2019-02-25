@@ -18,9 +18,11 @@ class Image_Crawler(ABC):
         self.city_name = ""
 
     def crawl_page(self, url):
-        with urllib.request.urlopen(url) as response:
-            html = response.read()
-            return BeautifulSoup(html, 'html.parser')
+        hdr = { 'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; Win64; x64)' }
+        req      = urllib.request.Request(url, headers=hdr)
+        response = urllib.request.urlopen(req)
+        html     = response.read()
+        return BeautifulSoup(html, 'html.parser')
 
     @abstractmethod
     def search(self, keyword):

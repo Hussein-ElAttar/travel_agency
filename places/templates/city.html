@@ -72,18 +72,19 @@
 
     <script type="text/javascript"> 
         {
-          let api_url = "http://localhost:8000/api/country/{{country}}/city/{{city.city_Name}}/"
-          let city_img_id = "{{city.city_Name}}"
+          let api_url = "http://localhost:8000/api/country/{{country}}/city/{{city.city_Name}}/".replace(" ","%20")
+          let city_img_id = "{{city.city_Name}}".replace(" ", "\\ ")
           fetch(api_url)
           .then((response)=>{
               let city_imgs       = document.body.querySelectorAll("#"+city_img_id)
-              // let description_tag = document.body.querySelector("#description")
+              let description_tag = document.body.querySelector("#description")
               response.json().then(data =>{
                 city_imgs.forEach((img)=>{
                   setInterval(function changeImg(){
+                    console.log(data.description)
                     let src =  data.urls[Math.floor(Math.random()*data.urls.length)]
                     img.setAttribute("style","background-image:url(" + src + ")" )
-                    // description_tag.textContent = data.description
+                    description_tag.textContent = data.description
                     return changeImg
                   }(),8000)
                 })
