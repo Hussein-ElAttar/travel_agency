@@ -47,32 +47,32 @@ class CityPics(models.Model):
 
 
 class Location(models.Model):
-    loc_Name = models.CharField(max_length=100)
-    loc_Description = models.CharField(max_length=1000, null=True, blank=True)
-    loc_Pic = models.ImageField(upload_to='locations', max_length=250)
+    name = models.CharField(max_length=100)
+    description = models.CharField(max_length=1000, null=True, blank=True)
+    pic = models.ImageField(upload_to='locations', max_length=250)
     name = models.ForeignKey(City)
 
     def __str__(self):
-        return self.loc_Name
+        return self.name
 
     def image_tag(self):
-        return u'<img src="/media/%s" width=50 height=50/>' % self.loc_Pic
+        return u'<img src="/media/%s" width=50 height=50/>' % self.pic
 
     image_tag.short_description = 'Image'
     image_tag.allow_tags = True
 
 
 class Hotel(models.Model):
-    hotel_Name = models.CharField(max_length=100)
-    hotel_Pic = models.ImageField(upload_to='hotels', max_length=250)
+    name = models.CharField(max_length=100)
+    pic = models.ImageField(upload_to='hotels', max_length=250)
 
     def __str__(self):
-        return self.hotel_Name
+        return self.name
 
 
 class UserHotelReservation(models.Model):
-    hotel_Name = models.ForeignKey(Hotel)
-    user_Name = models.ForeignKey(CustomUser)
+    hotel = models.ForeignKey(Hotel)
+    user = models.ForeignKey(CustomUser)
     rooms = models.IntegerField()
     room_type = models.IntegerField(choices=[(1, "Single"), (2, "Double"), (3, "Triple")])
     from_Date = models.DateTimeField(default=datetime.now)

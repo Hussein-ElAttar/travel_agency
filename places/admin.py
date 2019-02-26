@@ -29,21 +29,21 @@ class CustomCity(admin.ModelAdmin):
 
 class CustomLocation(admin.ModelAdmin):
     fieldsets = [
-        ['Location Info', {'fields': ['loc_Name', 'loc_Description', 'loc_Pic']}],
+        ['Location Info', {'fields': ['name', 'description', 'pic']}],
         ['City', {'fields': ['name']}]
     ]
-    list_display = ['loc_Name', 'loc_Description', 'name', 'image_tag']
+    list_display = ['name', 'description', 'name', 'image_tag']
     list_filter = ['name']
-    search_fields = ['name__name', 'loc_Name']
+    search_fields = ['name__name', 'name']
 
 
 class CustomHotel(admin.ModelAdmin):
     fieldsets = [
-        ['Hotel Info', {'fields': ['hotel_Name']}],
+        ['Hotel Info', {'fields': ['name']}],
         ['City', {'fields': ['name']}]
     ]
     list_display = ['hotel_id', 'city_id']
-    list_filter = ['hotel_id__hotel_Name', 'city_id__name']
+    list_filter = ['hotel_id__name', 'city_id__name']
     search_fields = ['city_id', 'hotel_id']
 
 

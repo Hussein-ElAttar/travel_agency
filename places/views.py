@@ -46,19 +46,20 @@ class city_handler:
         try:
             country = Country.objects.get(name = countryName)
             city    = City.objects.get(name = cityName, country = country.id)
-            posts   = city_handler.__get_city_posts(request, city.id)
             
             if request.method == 'GET':
-                form  = city_handler.__get_saved_user_rating_form(request, city.id)
+                form  = city_handler.__get_saved_user_rating_form(request, city)
 
             if request.method == 'POST':
                 form      = UserCityRateForm(request.POST)
                 post_form = PostForm(request.POST)
 
                 comment_form = CommentForm(request.POST)
-                city_handler.__create_post(request, post_form, city.id)
-                city_handler.__rate_city(request, form, city.id)
-                city_handler.__create_comment(request, form, city.id)
+                city_handler.__create_post(request, post_form, city)
+                city_handler.__rate_city(request, form, city)
+                # city_handler.__create_comment(request, form, city)
+
+            posts   = city_handler.__get_city_posts(request, city)
 
             context = {
                 "country": country, 
@@ -73,10 +74,10 @@ class city_handler:
             return HttpResponseRedirect("/")
 
     @staticmethod
-    def __get_saved_user_rating_form(request, cityId):
+    def __get_saved_user_rating_form(request, city):
         if request.user.is_authenticated:
             try:
-                rate_value = UserCityRate.objects.get(user_id = request.user.id, city_id = cityId).rate
+                rate_value = UserCityRate.objects.get(user_id = request.user.id, city = city).rate
                 user_rating = {"rate": rate_value}
             except :
                 user_rating = None
@@ -86,9 +87,9 @@ class city_handler:
             return None
     
     @staticmethod
-    def __get_city_posts(request, cityId):
+    def __get_city_posts(request, city):
         try:
-            posts = Post.objects.filter(city_Name_id=cityId)
+            posts = Post.objects.filter(city=city)
             print(posts[0])
         except:
             posts = []
@@ -98,34 +99,34 @@ class city_handler:
     def __get_post_comments(request, cityId):
         all_posts_comments = []
         try:
-            posts = Post.objects.filter(city_Name_id=cityId)
+            posts = Post.objects.filter(city=cityId)
             for post in posts:
                 comments = Comment.objects.filter(post_Id=post.id)
-                post_comments = {'post_id': post.id, 'post_comments': comments}
+                post_comments = {'post': post, 'post_comments': comments}
                 all_posts_comments.append(post_comments)
         except:
             all_posts_comments = []
         return all_posts_comments
 
     @staticmethod
-    def __rate_city(request, form, cityId):
+    def __rate_city(request, form, city):
         if form.is_valid():
             rate = form.cleaned_data.get('rate')
             try:
-                UserCityRate.objects.create(user_id = request.user.id, city_id = cityId, rate = rate)
+                UserCityRate.objects.create(user_id = request.user.id, city = city, rate = rate)
             except:
-                UserCityRate.objects.filter(user_id = request.user.id, city_id = cityId ).update(rate = rate)
+                UserCityRate.objects.filter(user_id = request.user.id, city = city ).update(rate = rate)
 
     @staticmethod
-    def __create_post(request, post_form, city_id):
+    def __create_post(request, post_form, city):
         if post_form.is_valid():
-            postText = post_form.cleaned_data.get('post_Text')
-            Post.objects.create(user_Name = request.user , city_Name = City(id=city_id), post_Text = postText)
+            postText = post_form.cleaned_data.get('text')
+            Post.objects.create(user = request.user , city = city, text = postText)
 
-    def __create_comment(request, comment_form, city_id):
+    def __create_comment(request, comment_form, city):
         if comment_form.is_valid():
-            commentText = comment_form.cleaned_data.get('comment_Text')
-            Comment.objects.create(user_Name = request.user , city_Name = City(id=city_id), comment_Text = commentText)
+            commentText = comment_form.cleaned_data.get('text')
+            Comment.objects.create(user = request.user , city = city, text = commentText)
 
 # Country Methods :-
 
@@ -139,7 +140,7 @@ def homePage(request):
 @login_required
 def showUserReservations(request):   
     try:
-        reservations=UserHotelReservation.objects.get(user_Name=request.user.id) 
+        reservations=UserHotelReservation.objects.get(user=request.user.id) 
         rents=showUserRentals(request)     
         context={"reservations":reservations,"rents":rents}    
     except:
@@ -178,8 +179,8 @@ def hotelReservation(request):
         form = HotelReservationForm(request.POST)
         if form.is_valid():
             UserHotelReservation.objects.create(
-                user_Name =request.user.id,
-                hotel_Name=request.POST.get('hotel_Name'),
+                user      =request.user.id,
+                hotel     =request.POST.get('name'),
                 rooms     =request.POST.get('rooms'),
                 room_type =request.POST.get('room_type'),
                 to_Date   =request.POST.get('to_Date'),

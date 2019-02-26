@@ -60,7 +60,7 @@
         <div class="p-5 bg-white">
           <h1>Posts</h1>
           {% for post in posts %}
-            <p> {{post.post_Text}} <span> --{{post.post_Created_at}}</span> <span> --{{post.user_Name}}</span></p>
+            <p> {{post.text}} <span> --{{post.created_at}}</span> <span> --{{post.user}}</span></p>
             <form method="post"> {%csrf_token%}
             {{comment.as_p}}
             <button type="submit">create comment</button>

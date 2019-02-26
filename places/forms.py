@@ -27,5 +27,5 @@ class HotelReservationForm(forms.ModelForm):
 
     class Meta:
         model = UserHotelReservation
-        fields = ['hotel_Name', 'rooms', 'room_type', 'to_Date', 'from_Date']
+        fields = ['hotel', 'rooms', 'room_type', 'to_Date', 'from_Date']
 
