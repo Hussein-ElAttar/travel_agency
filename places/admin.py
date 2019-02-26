@@ -1,11 +1,5 @@
 from django.contrib import admin
 from .models import Country, City, Location, Hotel, CityHotel
-# Register your models here.
-# Super User
-# user: 'mohamed'
-# email:'cap.mohamed.abdelhay@gmail.com'
-# pass: 'Os@12345'
-
 
 class CustomCountry(admin.ModelAdmin):
     fieldsets = [

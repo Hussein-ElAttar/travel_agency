@@ -198,26 +198,14 @@ def city_api(request,countryName, cityName):
     try:
         country = Country.objects.get(name = countryName)
         city    = City.objects.get(name = cityName, country = country.id)
-        if city.is_crawled:
-            urls = []
-            desc = city.description
-            city_pics_query = CityPics.objects.filter(city_id=city.id)
-            for city_pic in city_pics_query:
-                urls.append(city_pic.url)
-        else:
-            cr = Gretty_Image_Crawler(cityName)
-            desc = cr.get_city_description()
-            city.description = desc
-            urls = cr.get_urls()[:10]
-            for url in urls:
-                CityPics.objects.create(url=url, city = city)
-            city.is_crawled = True
-            city.save()
-
-        return JsonResponse({"city":city.name, "urls":urls, "description":desc})
+        data = get_city_data(city)
+        return JsonResponse({
+            "city":data['city'],
+            "urls":data['urls'],
+            "description":data['description']
+        })
     except:
         return JsonResponse({"status":"404","error":"not found"})
-
 
 def country_api(request, countryName):
     try:
@@ -225,23 +213,29 @@ def country_api(request, countryName):
         country_cities    = City.objects.filter(country = country.id)
         random_valid_city_num = random.randint(0, len(country_cities)-1)
         city = country_cities[random_valid_city_num]
-        
-        if city.is_crawled:
-            urls = []
-            desc = city.description
-            city_pics_query = CityPics.objects.filter(city_id=city.id)
-            for city_pic in city_pics_query:
-                urls.append(city_pic.url)
-        else:
-            cr = Gretty_Image_Crawler(city.name)
-            desc = cr.get_city_description()
-            city.description = desc
-            urls = cr.get_urls()[:10]
-            for url in urls:
-                CityPics.objects.create(url=url, city = city)
-            city.is_crawled = True
-            city.save()
-
-        return JsonResponse({"country":country.name, "urls":urls, "description":desc})
+        data = get_city_data(city)
+        return JsonResponse({
+            "country":country.name,
+            "urls":data['urls'],
+        })
     except:
         return JsonResponse({"status":"404","error":"not found"})
+
+def get_city_data(city):
+    if city.is_crawled:
+        urls = []
+        desc = city.description
+        city_pics_query = CityPics.objects.filter(city_id=city.id)
+        for city_pic in city_pics_query:
+            urls.append(city_pic.url)
+    else:
+        cr = Gretty_Image_Crawler(cityName)
+        desc = cr.get_city_description()
+        city.description = desc
+        urls = cr.get_urls()[:10]
+        for url in urls:
+            CityPics.objects.create(url=url, city = city)
+        city.is_crawled = True
+        city.save()
+
+    return {"city":city.name, "urls":urls, "description":desc}
