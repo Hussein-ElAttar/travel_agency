@@ -12,15 +12,12 @@
 
                 <div class="col-md-8" data-aos="fade-up" data-aos-delay="400">
                   <h1 class="text-white font-weight-light">{{ city.name }}</h1>
-                  <!--<div><a href="\">Home</a> <span class="mx-2 text-white">&bullet;</span> <span class="text-white">{{ city.name }}</span></div>-->
                     <span><a href="/rentcar/" class="btn btn-primary py-3 px-5 text-white">Rent Car!</a></span>
                     <span><a href="/hotelres/" class="btn btn-primary py-3 px-5 text-white">Reservation!</a></span>
                 </div>
               </div>
             </div>
         </div>
-
-
 
     <div class="site-section bg-light">
       <div class="container">
@@ -35,7 +32,7 @@
             </div>
           </div>
 
-            {% if request.user.is_authenticated %}
+            {% if is_loggedin %}
             <div class="col-md-5">
             <div class="p-4 mb-3 bg-white">
               <h1>Rate your experience</h1>
@@ -48,28 +45,47 @@
                 </form>
             </div>
             </div>
-            
             {% endif %}
-          
-          <form method="post"> {%csrf_token%}
-            {{post.as_p}}
-            <button type="submit">create post</button> 
-          </form>
         </div>
 
         <div class="p-5 bg-white">
-          <h1>Posts</h1>
-          {% for post in posts %}
-            <p> {{post.text}} <span> --{{post.created_at}}</span> <span> --{{post.user}}</span></p>
-            <form method="post"> {%csrf_token%}
-            {{comment.as_p}}
-            <button type="submit">create comment</button>
-          </form>
+          <h1>Blogs</h1>          
+          {% for blog in blogs %}
+              <!-- show posts -->
+              <p>
+                <img width=25 src="{% static blog.post.user.avatar%}"> 
+                {{blog.post.text}} <span> --{{blog.post.created_at}}</span> <span> --{{blog.post.user}}</span>
+              </p>
+              
+              {% for comment in blog.comments %}
+                  <!-- show comments on each post -->
+                  <p class="ml-5"> 
+                    <img width=25 src="{% static comment.user.avatar%}"> 
+                    {{comment.text}} <span> --{{comment.created_at}}</span> <span> --{{comment.user}}</span>
+                  </p>
+              {% endfor %}
+              
+              <!-- add a comment -->
+          {% if is_loggedin %}
+              <form class="ml-5" method="post"> {%csrf_token%}
+                <input hidden name="comment_post_id" value="{{blog.post.id}}">
+                {{comment_form.text}}
+                <button type="submit">comment</button>
+              </form>
+          {% endif %}
           {% endfor %}
+          <br>
+          {% if is_loggedin %}
+          <form method="post"> {%csrf_token%}
+            {{post.text}}
+            <button type="submit">create post</button> 
+          </form>
+          {% endif %}
         </div>
       </div>
     </div>
 
+    <!-- get city images from API -->
     <script type="text/javascript"> 
         {
           let api_url = "http://localhost:8000/api/country/{{country}}/city/{{city.name}}/".replace(" ","%20")
@@ -81,7 +97,6 @@
               response.json().then(data =>{
                 city_imgs.forEach((img)=>{
                   setInterval(function changeImg(){
-                    console.log(data.description)
                     let src =  data.urls[Math.floor(Math.random()*data.urls.length)]
                     img.setAttribute("style","background-image:url(" + src + ")" )
                     description_tag.textContent = data.description
