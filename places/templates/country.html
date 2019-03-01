@@ -36,7 +36,7 @@
     <script>
       {
         let api_url = "http://localhost:8000/api/country/{{country.name}}/".replace(" ","%20")
-        let country_img_id = "{{country.name}}".replace(" ", "\\ ")
+        let country_img_id = "{{country.name}}".replace(/ /g, "\\ ")
         fetch(api_url)
         .then((response)=>{
               let city_imgs = document.body.querySelectorAll("#"+country_img_id)

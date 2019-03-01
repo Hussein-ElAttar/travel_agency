@@ -4,6 +4,7 @@ from threading import Thread
 import urllib.request
 import random
 import re
+import requests
 
 gretty_url    = "https://www.gettyimages.com/photos/{{keyword}}?alloweduse=availableforalluses&family=creative&license=rf&phrase={{keyword}}&sort=best#license"
 lorum_ipsum   = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged"
@@ -19,9 +20,7 @@ class Image_Crawler(ABC):
 
     def crawl_page(self, url):
         hdr = { 'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; Win64; x64)' }
-        req      = urllib.request.Request(url, headers=hdr)
-        response = urllib.request.urlopen(req)
-        html     = response.read()
+        html = requests.get(url, headers=hdr).content
         return BeautifulSoup(html, 'html.parser')
 
     @abstractmethod
@@ -78,7 +77,7 @@ class Yahoo_Image_Crawler(Image_Crawler):
     
     def search(self, keyword):
         self.urls = []
-        self.city_name = keyword.replace(" ", "%20")
+        self.city_name = keyword.replace(" ", "%20").encode('utf-8')
         url      = yahoo_url.replace("{{keyword}}",keyword)
         crawler  = self.crawl_page(url)
         lis  = crawler.findAll("li",{"class":"ld"})

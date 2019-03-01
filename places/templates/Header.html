@@ -23,7 +23,7 @@
                   </ul>
                 </li>
                     {% if request.user.is_authenticated %}
-                <li><a href="/users/user/{{request.user.id}}">Profile</a></li>
+                <li><a href="/users/user/{{request.user.id}}/">Profile</a></li>
                 <li><a href="/users/logout/">Log out</a></li>
                       {% else %}
                 <li><a href="/users/login/">Log in</a></li>

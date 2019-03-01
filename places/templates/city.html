@@ -88,8 +88,8 @@
     <!-- get city images from API -->
     <script type="text/javascript"> 
         {
-          let api_url = "http://localhost:8000/api/country/{{country}}/city/{{city.name}}/".replace(" ","%20")
-          let city_img_id = "{{city.name}}".replace(" ", "\\ ")
+          let api_url = "http://localhost:8000/api/country/{{country}}/city/{{city.name}}/".replace(/ /g,"%20")
+          let city_img_id = "{{city.name}}".replace(/ /g, "\\ ")
           fetch(api_url)
           .then((response)=>{
               let city_imgs       = document.body.querySelectorAll("#"+city_img_id)

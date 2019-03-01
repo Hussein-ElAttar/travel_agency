@@ -33,6 +33,7 @@ AUTH_USER_MODEL = 'users.CustomUser'
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders',
     'places',
     'blog',
     'users',
@@ -45,6 +46,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -85,7 +87,11 @@ DATABASES = {
         'PORT':   '3306',
         'NAME':   'travel_agency',
         'USER':   'phpmyadmin',
-        'PASSWORD': 'Os@12345'
+        'PASSWORD': 'Os@12345',
+        'OPTIONS': {
+                    'charset': 'utf8mb4',
+                    'use_unicode': True
+        }
     }
 }
 
@@ -135,4 +141,4 @@ STATICFILES_DIRS = [STATIC_DIR]
 # Media
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
-
+CORS_ORIGIN_ALLOW_ALL = True

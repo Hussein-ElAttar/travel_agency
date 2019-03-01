@@ -64,7 +64,7 @@ INSERT INTO places_country(name) VALUES ('Ireland');
 INSERT INTO places_country(name) VALUES ('Spain');
 INSERT INTO places_country(name) VALUES ('United Kingdom');
 INSERT INTO places_country(name) VALUES ('Gibraltar');
-INSERT INTO places_country(name) VALUES ('Côte d''Ivoire');
+INSERT INTO places_country(name) VALUES ('Cote dIvoire');
 INSERT INTO places_country(name) VALUES ('Australia');
 INSERT INTO places_country(name) VALUES ('France');
 INSERT INTO places_country(name) VALUES ('Burkina Faso');

@@ -34,10 +34,13 @@ def country_page(request, countryName):
         return HttpResponseRedirect("/")
 
 def city_page(request, countryName, cityName):
-    city_handler = CityHandler(request, countryName, cityName)
-    context      = city_handler.get_context()
-    context['countries'] = getAllCountries()
-    return render(request, "city.html", context)
+    try:
+        city_handler = CityHandler(request, countryName, cityName)
+        context      = city_handler.get_context()
+        context['countries'] = getAllCountries()
+        return render(request, "city.html", context)
+    except:
+        return HttpResponseRedirect("/")
 
 def homePage(request):
     countries = getAllCountries()
@@ -106,7 +109,7 @@ def hotelReservation(request):
 def city_api(request,countryName, cityName):
     try:
         country = Country.objects.get(name = countryName)
-        city    = City.objects.get(name = cityName, country = country.id)
+        city    = City.objects.get(name = cityName, country = country)
         data = get_city_data(city)
         return JsonResponse({
             "city":data['city'],
@@ -119,7 +122,7 @@ def city_api(request,countryName, cityName):
 def country_api(request, countryName):
     try:
         country = Country.objects.get(name = countryName)
-        country_cities    = City.objects.filter(country = country.id)
+        country_cities    = City.objects.filter(country = country)
         random_valid_city_num = random.randint(0, len(country_cities)-1)
         city = country_cities[random_valid_city_num]
         data = get_city_data(city)
@@ -148,60 +151,3 @@ def get_city_data(city):
         city.save()
 
     return {"city":city.name, "urls":urls, "description":desc}
-
-
-
-
-# class API():
-#     def __init__(self,countryName,cityName=None):
-#         self.response = {}
-#         try:
-#             if cityName:
-#                 self.country = Country.objects.get(name = countryName)
-#                 self.city    = City.objects.get(name = cityName, country = country.id)
-#             else:
-#                 self.country          = Country.objects.get(name = countryName)
-#                 country_cities        = City.objects.filter(country = country.id)
-#                 random_valid_city_num = random.randint(0, len(country_cities)-1)
-#                 self.city             = country_cities[random_valid_city_num]
-
-#                 self.data     = __get_city_data(city)
-#                 self.response = get_response()
-#         except:
-#             self.response ={"status":"404","error":"not found"}
-            
-#     def __get_city_data(self):
-#         city = self.city
-#         if city.is_crawled:
-#             urls = []
-#             desc = city.description
-#             city_pics_query = CityPics.objects.filter(city_id=city.id)
-#             for city_pic in city_pics_query:
-#                 urls.append(city_pic.url)
-#         else:
-#             cr = Gretty_Image_Crawler(city.name)
-#             desc = cr.get_city_description()
-#             city.description = desc
-#             urls = cr.get_urls()[:10]
-
-#         return {"city":city.name, "urls":urls, "description":desc, "status":200}
-
-#     def __save_city_data_to_db(self, city, urls):
-#             for url in urls:
-#                 CityPics.objects.create(url=url, city = city)
-#             city.is_crawled = True
-#             city.save()
-
-#     def get_response(self):
-#         if self.response.status == 200:
-#             return ({
-#                         "country":self.country.name,
-#                         "city":self.data['city'],
-#                         "urls":self.data['urls'],
-#                         "description":data['description']
-#                     })
-#         else:
-#             return ({
-#                         "status":"404",
-#                         "error":"not found"
-#                     })

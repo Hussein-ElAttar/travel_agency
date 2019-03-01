@@ -1,3 +1,6 @@
+ ALTER TABLE places_city MODIFY COLUMN description VARCHAR(255)
+    CHARACTER SET utf8 COLLATE utf8_general_ci;
+    
 INSERT INTO places_city(name,country_id) VALUES ('Adak', (select id from places_country where name = 'United States' LIMIT 1 ));
 INSERT INTO places_city(name,country_id) VALUES ('Apia', (select id from places_country where name = 'Samoa' LIMIT 1 ));
 INSERT INTO places_city(name,country_id) VALUES ('Pago Pago', (select id from places_country where name = 'United States 'LIMIT 1 ));
@@ -142,7 +145,7 @@ INSERT INTO places_city(name,country_id) VALUES ('Charlottetown', (select id fro
 INSERT INTO places_city(name,country_id) VALUES ('The Valley', (select id from places_country where name = 'Anguilla 'LIMIT 1 ));
 INSERT INTO places_city(name,country_id) VALUES ('Basse-Terre', (select id from places_country where name = 'Guadeloupe 'LIMIT 1 ));
 INSERT INTO places_city(name,country_id) VALUES ('Bahía Blanca', (select id from places_country where name = 'Argentina 'LIMIT 1 ));
-INSERT INTO places_city(name,country_id) VALUES ('St. John''s', (select id from places_country where name = 'Canada 'LIMIT 1 ));
+INSERT INTO places_city(name,country_id) VALUES ('St Johns', (select id from places_country where name = 'Canada 'LIMIT 1 ));
 INSERT INTO places_city(name,country_id) VALUES ('San Fernando', (select id from places_country where name = 'Trinidad and Tobago 'LIMIT 1 ));
 INSERT INTO places_city(name,country_id) VALUES ('Roseau', (select id from places_country where name = 'Dominica 'LIMIT 1 ));
 INSERT INTO places_city(name,country_id) VALUES ('Chaguanas', (select id from places_country where name = 'Trinidad and Tobago 'LIMIT 1 ));
@@ -291,7 +294,7 @@ INSERT INTO places_city(name,country_id) VALUES ('Sabha', (select id from places
 INSERT INTO places_city(name,country_id) VALUES ('Birkirkara', (select id from places_country where name = 'Malta 'LIMIT 1 ));
 INSERT INTO places_city(name,country_id) VALUES ('Ljubljana', (select id from places_country where name = 'Slovenia 'LIMIT 1 ));
 INSERT INTO places_city(name,country_id) VALUES ('Valletta', (select id from places_country where name = 'Malta 'LIMIT 1 ));
-INSERT INTO places_city(name,country_id) VALUES ('N''Djamena', (select id from places_country where name = 'Chad 'LIMIT 1 ));
+INSERT INTO places_city(name,country_id) VALUES ('NDjamena', (select id from places_country where name = 'Chad 'LIMIT 1 ));
 INSERT INTO places_city(name,country_id) VALUES ('Brazzaville', (select id from places_country where name = 'Republic of the Congo 'LIMIT 1 ));
 INSERT INTO places_city(name,country_id) VALUES ('Kinshasa', (select id from places_country where name = 'Democratic Republic of the Congo 'LIMIT 1 ));
 INSERT INTO places_city(name,country_id) VALUES ('Graz', (select id from places_country where name = 'Austria 'LIMIT 1 ));

@@ -29,7 +29,7 @@
         <div class="row">
           {% for city in top_cities %}
             <div class="col-md-6 col-lg-4 mb-4">
-            <a href="/country/{{city.city.country}}/" class="unit-1 text-center">
+            <a href="/country/{{city.city.country }}/" class="unit-1 text-center">
               <img id="{{city.city.country}}" src="{% static 'images/loadingimg.gif' %}" alt="Image" class="img-fluid" style="height:250px">
               <div class="unit-1-text">
                 <h3 class="unit-1-heading">{{city.city.country}}</h3>
@@ -113,8 +113,8 @@
     <script type="text/javascript"> 
       {% for city in top_cities %}
         {
-        let api_url = "http://localhost:8000/api/country/{{city.city.country}}/"
-        let country_img_id = "{{city.city.country}}"
+        let api_url = "http://localhost:8000/api/country/{{city.city.country}}/".replace(" ","%20")
+        let country_img_id = "{{city.city.country}}".replace(" ", "\\ ")
         fetch(api_url)
         .then((response)=>{
               let country_img = document.body.querySelector("#"+country_img_id)
@@ -129,8 +129,8 @@
     <script>
       {% for city in top_cities %}
       {
-        let api_url     = "http://localhost:8000/api/country/{{city.city.country}}/city/{{city.city}}/"
-        let city_img_id = "{{city.city}}"
+        let api_url     = "http://localhost:8000/api/country/{{city.city.country}}/city/{{city.city}}/".replace(" ","%20")
+        let city_img_id = "{{city.city}}".replace(" ", "\\ ")
         let desc_tag    ="{{city.city}}_desc"
         fetch(api_url)
         .then((response)=>{
